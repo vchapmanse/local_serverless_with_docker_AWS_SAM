@@ -1,0 +1,38 @@
+version: "3.3"
+
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: my-dynamodb-container
+    command: -jar DynamoDBLocal.jar -inMemory -sharedDb
+    ports:
+      - "8000:8000"
+    deploy:
+      replicas: 1
+
+  stepfunctions:
+    image: amazon/aws-stepfunctions-local
+    container_name: step-functions-container
+    ports:
+      - "8083:8083"
+    environment:
+      - "AWS_REGION=us-east-1"
+      - "LAMBDA_ENDPOINT=http://docker.for.mac.localhost:3001"
+      - "DYNAMODB_ENDPOINT=http://docker.for.mac.localhost:8000"
+   
+    deploy:
+      replicas: 1
+  s3:
+    image: minio/minio
+    container_name: s3-container
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./tests/s3_files:/data
+    command: server /data
+    environment:
+      - "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE"
+      - "MINIO_SECRET_KEY=wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY"
+    deploy:
+      replicas: 1
+

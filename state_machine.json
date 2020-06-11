@@ -1,0 +1,132 @@
+{
+    "Comment": "An example of using State Functions for local development and end to end testing.",
+    "StartAt": "Parse S3 File",
+    "States": {
+      "Parse S3 File": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:123456789012:function:WordCountFunction",
+        "Next": "Wait For Approval",
+        "ResultPath": "$"
+      },
+      "Wait For Approval": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "Next": "ManualApprovalChoiceState",
+        "Parameters": {
+            "FunctionName": "arn:aws:lambda:us-east-1:123456789012:function:ManualApproval",
+            "Payload": {"ExecutionContext.$": "$$"}
+          },
+        "ResultPath": "$.taskResult"
+      },
+      "ManualApprovalChoiceState": {
+        "Type": "Choice",
+        "OutputPath": "$",
+        "Choices": [
+          {
+            "Variable": "$.taskResult.Status",
+            "StringEquals": "Approved!",
+            "Next": "Accept File"
+          },
+          {
+            "Variable": "$.taskResult.Status",
+            "StringEquals": "Rejected!",
+            "Next": "Reject File"
+          }
+        ]
+      },
+      "Accept File": {
+        "Type": "Parallel",
+        "Next": "Finish",
+        "Branches": [
+            {
+                "StartAt": "Update Words",
+                "States": {
+                    "Update Words": {
+                        "Type": "Map",
+                        "ItemsPath": "$.words",
+                        "End": true,
+                        "Parameters": {
+                            "file_name.$": "$.file_name",
+                            "word.$": "$$.Map.Item.Value"
+                        },
+                        "Iterator": {
+                            "StartAt": "Create Word File Link",
+                            "States": {
+                            "Create Word File Link": {
+                                "Type": "Task",
+                                "Resource": "arn:aws:states:::dynamodb:putItem",
+                                "ResultPath": null,
+                                "Parameters": {
+                                    "TableName": "WordCounts",
+                                    "Item": {
+                                        "primary_key": {
+                                            "S.$": "$.word"
+                                        },
+                                        "sort_key": {
+                                            "S.$": "$.file_name"
+                                        }
+                                    }
+                                },
+                                "End": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "StartAt": "Publish File",
+                "States": {
+                    "Publish File": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::dynamodb:putItem",
+                        "ResultPath": null,
+                        "Parameters": {
+                            "TableName": "WordCounts",
+                            "Item": {
+                                "primary_key": {
+                                    "S.$": "$.file_name"
+                                },
+                                "sort_key": {
+                                    "S": "Record"
+                                },
+                                "word_counts": {
+                                    "L.$": "$.words"
+                                },
+                                "Status": {
+                                    "S": "Approved"
+                                }
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            }
+        ]
+        
+    },
+    "Reject File": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::dynamodb:putItem",
+        "Parameters": {
+            "TableName": "WordCounts",
+            "Item": {
+                "primary_key": {
+                    "S.$": "$.file_name"
+                },
+                "sort_key": {
+                    "S": "Record"
+                },
+                "Status": {
+                    "S": "Rejected"
+                }
+            }
+        },
+        "ResultPath": "$.DynamoDB",
+        "Next": "Finish"
+    },
+    "Finish": {
+        "Type": "Succeed"
+    }
+  }
+}

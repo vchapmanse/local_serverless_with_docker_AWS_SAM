@@ -1,0 +1,17 @@
+Code of Conduct
+We firmly believe in the value and importance of an environment where all AWS Community Day participants feel welcome and safe. The purpose of our AWS events is to foster exchange of technical knowledge and encourage community discussion and participation. The terms of this Code of Conduct are non-negotiable and behavior that runs counter to it will not be tolerated. By attending this event, you agree to respect and follow these rules.
+
+We expect the following from all participants (including AWS employees, attendees, vendors, sponsors, speakers, volunteers, and guests): 
+
+You will behave in a way as to create a safe and supportive environment for all event participants.
+You will not engage in disruptive speech or behavior or otherwise interfere with the event or other individuals’ participation in the event.
+You will not engage in any form of harassing, offensive, discriminatory, or threatening speech or behavior, including (but not limited to) relating to race, gender, gender identity and expression, national origin, religion, disability, marital status, age, sexual orientation, military or veteran status, or other protected category.
+You will comply with the instructions of event and venue staff.
+You will comply with all applicable laws.
+If a participant engages in inappropriate behavior, the organizers may take any action they deem appropriate, including warning the offender or expulsion from the event. If you are being harassed, notice that someone else is being harassed, or have any other concerns, please report it to an organizer immediately.
+
+ 
+
+In short, let's be excellent to each other!
+
+This code of conduct was adapted from the AWS Community Code of Conduct.

@@ -1,0 +1,1 @@
+This file is rejected. Because it has the name rejected in the file name.

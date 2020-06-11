@@ -1,0 +1,4 @@
+AWS Usergroups
+The Midwest AWS user groups are run by volunteers. We organize, coordinate and often speak at each event. Community events are free, open to the public and focused on all things AWS. We are not run by AWS, but frequently work with Amazon SAs and account reps.
+MIDWEST USERGROUPS
+Aside from the annual Community Days, many usergroups organize sessions on AWS  topics throughtout the year. Find your local usergroup below and get involved!
