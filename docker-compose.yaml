@@ -10,6 +10,7 @@ services:
     deploy:
       replicas: 1
 
+      
   stepfunctions:
     image: amazon/aws-stepfunctions-local
     container_name: step-functions-container
@@ -19,9 +20,10 @@ services:
       - "AWS_REGION=us-east-1"
       - "LAMBDA_ENDPOINT=http://docker.for.mac.localhost:3001"
       - "DYNAMODB_ENDPOINT=http://docker.for.mac.localhost:8000"
-   
     deploy:
       replicas: 1
+
+
   s3:
     image: minio/minio
     container_name: s3-container
